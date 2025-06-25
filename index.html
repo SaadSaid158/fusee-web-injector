@@ -15,6 +15,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1e293b 0%, #7c3aed 50%, #1e293b 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             color: white;
             display: flex;
@@ -22,36 +23,86 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .background-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.3; }
         }
         
         .container {
-            max-width: 800px;
+            max-width: 900px;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
         
         .header {
             margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out;
         }
         
         .icon {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-            border-radius: 12px;
+            border-radius: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
-            font-size: 24px;
+            font-size: 32px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5); }
         }
         
         h1 {
-            font-size: 3rem;
-            background: linear-gradient(45deg, #60a5fa, #a78bfa);
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 16px;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
         
         .subtitle {
@@ -59,15 +110,41 @@
             color: #94a3b8;
             max-width: 600px;
             margin: 0 auto;
+            line-height: 1.6;
         }
         
         .card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: 16px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 20px;
             padding: 32px;
             margin: 32px 0;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.4s; }
+        .card:nth-child(4) { animation-delay: 0.6s; }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            border-color: rgba(148, 163, 184, 0.5);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .status {
@@ -75,58 +152,136 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .status:hover {
+            background: rgba(0, 0, 0, 0.3);
         }
         
         .badge {
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .badge:hover::before {
+            left: 100%;
         }
         
         .badge-success {
-            background: rgba(34, 197, 94, 0.2);
+            background: linear-gradient(45deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.3));
             color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
         }
         
         .badge-error {
-            background: rgba(239, 68, 68, 0.2);
+            background: linear-gradient(45deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.3));
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
         }
         
         .button {
             background: linear-gradient(45deg, #3b82f6, #8b5cf6);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             margin: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .button:hover::before {
+            left: 100%;
         }
         
         .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(-1px);
         }
         
         .button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
+        }
+
+        .button:disabled::before {
+            display: none;
+        }
+        
+        .button.selected {
+            background: linear-gradient(45deg, #10b981, #059669);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            animation: selectedPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes selectedPulse {
+            0%, 100% { box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6); }
         }
         
         .alert {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 8px;
-            padding: 16px;
+            background: linear-gradient(45deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.15));
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 20px;
             margin: 20px 0;
             color: #fbbf24;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #f59e0b, #fbbf24);
         }
         
         .instructions {
@@ -135,8 +290,17 @@
         }
         
         .instructions h3 {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             color: white;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions h3::before {
+            content: '📋';
+            font-size: 1.2rem;
         }
         
         .instructions ol {
@@ -144,20 +308,364 @@
         }
         
         .instructions li {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: #cbd5e1;
+            line-height: 1.6;
+            padding: 8px 0;
+            border-left: 2px solid transparent;
+            padding-left: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .instructions li:hover {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 0 8px 8px 0;
         }
         
         #status-message {
             margin-top: 16px;
-            padding: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        #status-message:hover {
+            background: rgba(30, 41, 59, 0.9);
+        }
+        
+        #progress-container {
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        #progress-bar {
+            background: rgba(148, 163, 184, 0.2);
             border-radius: 8px;
-            background: rgba(30, 41, 59, 0.5);
+            height: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        #progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        #progress-fill {
+            background: linear-gradient(45deg, #34d399, #10b981, #059669);
+            background-size: 200% 200%;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 8px;
+            animation: progressGradient 2s ease-in-out infinite;
+        }
+
+        @keyframes progressGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .log-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 32px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .log-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .log-container::-webkit-scrollbar-track {
+            background: rgba(148, 163, 184, 0.1);
+            border-radius: 4px;
+        }
+
+        .log-container::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 4px;
+        }
+
+        .log-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
+        }
+        
+        .log-container h3 {
+            margin-bottom: 16px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .log-entry {
+            margin-bottom: 6px;
+            padding: 4px 0;
+            animation: logEntrySlide 0.3s ease-out;
+            border-left: 2px solid transparent;
+            padding-left: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .log-entry:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: #3b82f6;
+            border-radius: 0 4px 4px 0;
+        }
+
+        @keyframes logEntrySlide {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .log-timestamp {
+            color: #64748b;
+            margin-right: 8px;
+            font-weight: 600;
+        }
+        
+        .log-info {
+            color: #60a5fa;
+        }
+        
+        .log-success {
+            color: #34d399;
+            font-weight: 600;
+        }
+        
+        .log-error {
+            color: #f87171;
+            font-weight: 600;
+        }
+        
+        .log-warning {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .payload-section {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
             border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .payload-section:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        .payload-section h3 {
+            margin-bottom: 16px;
+            color: white;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payload-section h3::before {
+            content: '⚡';
+            font-size: 1.1rem;
+        }
+
+        .payload-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .file-input-container {
+            margin: 16px 0;
+        }
+
+        .file-input-container input[type="file"] {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: 2px dashed rgba(148, 163, 184, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-input-container input[type="file"]:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .inject-button {
+            background: linear-gradient(45deg, #dc2626, #ef4444, #f87171);
+            background-size: 200% 200%;
+            font-size: 1.2rem;
+            padding: 18px 36px;
+            margin: 24px 0;
+            animation: injectButtonGlow 3s ease-in-out infinite;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        @keyframes injectButtonGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: 0 8px 25px rgba(220, 38, 38, 0.6);
+            }
+        }
+
+        .inject-button:hover:not(:disabled) {
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.5);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .connection-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: floatAround 20s linear infinite;
+        }
+
+        @keyframes floatAround {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .card {
+                padding: 24px;
+                margin: 20px 0;
+            }
+            
+            .status {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .payload-buttons {
+                flex-direction: column;
+            }
+            
+            .connection-buttons {
+                flex-direction: column;
+            }
+
+            .icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success checkmark animation */
+        .checkmark {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #34d399;
+            position: relative;
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 3px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
         }
     </style>
 </head>
 <body>
+    <div class="background-particles" id="particles"></div>
+    <div class="floating-elements" id="floating-elements"></div>
+
     <div class="container">
         <div class="header">
             <div class="icon">🎮</div>
@@ -181,8 +689,10 @@
                 <span id="connection-status" class="badge badge-error">Disconnected</span>
             </div>
             
-            <button id="connect-btn" class="button" disabled>Connect Switch</button>
-            <button id="detect-btn" class="button">🔄 Detect</button>
+            <div class="connection-buttons">
+                <button id="connect-btn" class="button" disabled>Connect Switch</button>
+                <button id="detect-btn" class="button">🔄 Detect</button>
+            </div>
             
             <div id="status-message">
                 <p id="status-text">Checking WebUSB support...</p>
@@ -192,24 +702,30 @@
         <div class="card">
             <h2 style="margin-bottom: 20px;">Payload Selection</h2>
             
-            <div style="margin-bottom: 20px;">
+            <div class="payload-section">
                 <h3>Predefined Payloads</h3>
-                <button class="button" onclick="selectPayload('hekate')">CTCaer Hekate v6.3.1</button>
-                <button class="button" onclick="selectPayload('atmosphere')">Atmosphere Fusee v1.9.1</button>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <h3>Custom Payload</h3>
-                <input type="file" id="payload-file" accept=".bin" style="margin-bottom: 10px;">
-            </div>
-            
-            <button id="inject-btn" class="button" disabled onclick="injectPayload()">⚡ Inject Payload</button>
-            
-            <div id="progress-container" style="display: none; margin-top: 20px;">
-                <div style="background: rgba(148, 163, 184, 0.2); border-radius: 4px; height: 8px; overflow: hidden;">
-                    <div id="progress-bar" style="background: linear-gradient(45deg, #34d399, #10b981); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                <div class="payload-buttons">
+                    <button class="button payload-btn" data-payload="hekate">CTCaer Hekate v6.3.1</button>
+                    <button class="button payload-btn" data-payload="atmosphere">Atmosphere Fusee v1.9.1</button>
                 </div>
-                <p id="progress-text" style="margin-top: 8px; font-size: 0.875rem;">0%</p>
+            </div>
+            
+            <div class="payload-section">
+                <h3>Custom Payload File</h3>
+                <div class="file-input-container">
+                    <input type="file" id="payload-file" accept=".bin">
+                </div>
+            </div>
+            
+            <!-- Removed Base64 Payload Section -->
+
+            <button id="inject-btn" class="button inject-button" disabled>⚡ Inject Payload</button>
+            
+            <div id="progress-container">
+                <div id="progress-bar">
+                    <div id="progress-fill"></div>
+                </div>
+                <p id="progress-text" style="font-size: 0.875rem;">0%</p>
             </div>
         </div>
         
@@ -224,72 +740,249 @@
                 <li>Put your Switch in RCM mode using a jig or modchip</li>
                 <li>Connect your Switch to your computer via USB-C cable</li>
                 <li>Click "Connect Switch" and select the APX device</li>
-                <li>Choose a payload and click "Inject Payload"</li>
+                <li>Choose a payload (either predefined or custom .bin file) and click "Inject Payload"</li>
             </ol>
+        </div>
+        
+        <div class="log-container">
+            <h3>📋 Injection Log</h3>
+            <div id="log-content">
+                <div class="log-entry">
+                    <span class="log-timestamp">[00:00:00]</span>
+                    <span class="log-info">RCM Payload Injector initialized</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Create animated background particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Create floating elements
+        function createFloatingElements() {
+            const container = document.getElementById('floating-elements');
+            const elements = ['🎮', '⚡', '🔧', '💾', '🚀'];
+            
+            setInterval(() => {
+                if (container.children.length < 5) {
+                    const element = document.createElement('div');
+                    element.className = 'floating-element';
+                    element.textContent = elements[Math.floor(Math.random() * elements.length)];
+                    element.style.left = Math.random() * 100 + '%';
+                    element.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    element.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                    container.appendChild(element);
+                    
+                    setTimeout(() => {
+                        if (element.parentNode) {
+                            element.parentNode.removeChild(element);
+                        }
+                    }, 25000);
+                }
+            }, 3000);
+        }
+
+        // RCM Constants (from WebRCM implementation)
+        const RCM_PAYLOAD_ADDRESS = 0x40010000;
+        const INTERMEZZO_LOCATION = 0x4001F000;
+        const PAYLOAD_LOAD_BLOCK = 0x40020000;
+        
+        // Intermezzo payload (from WebRCM)
+        const intermezzo = new Uint8Array([
+            0x44, 0x00, 0x9F, 0xE5, 0x01, 0x11, 0xA0, 0xE3, 0x40, 0x20, 0x9F, 0xE5, 0x00, 0x20, 0x42, 0xE0,
+            0x08, 0x00, 0x00, 0xEB, 0x01, 0x01, 0xA0, 0xE3, 0x10, 0xFF, 0x2F, 0xE1, 0x00, 0x00, 0xA0, 0xE1,
+            0x2C, 0x00, 0x9F, 0xE5, 0x2C, 0x10, 0x9F, 0xE5, 0x02, 0x28, 0xA0, 0xE3, 0x01, 0x00, 0x00, 0xEB,
+            0x20, 0x00, 0x9F, 0xE5, 0x10, 0xFF, 0x2F, 0xE1, 0x04, 0x30, 0x90, 0xE4, 0x04, 0x30, 0x81, 0xE4,
+            0x04, 0x20, 0x52, 0xE2, 0xFB, 0xFF, 0xFF, 0x1A, 0x1E, 0xFF, 0x2F, 0xE1, 0x20, 0xF0, 0x01, 0x40,
+            0x5C, 0xF0, 0x01, 0x40, 0x00, 0x00, 0x02, 0x40, 0x00, 0x00, 0x01, 0x40
+        ]);
+        
         let device = null;
         let selectedPayload = null;
+        let selectedPayloadData = null;
         
-        // Check WebUSB support
+        // Predefined payloads (loaded from files)
+        const predefinedPayloads = {
+            hekate: 'payloads/hekate.bin',
+            atmosphere: 'payloads/atmosphere.bin'
+        };
+
+        // Function to fetch payload from file
+        async function fetchPayload(url) {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch payload from ${url}: ${response.statusText}`);
+            }
+            const buffer = await response.arrayBuffer();
+            return new Uint8Array(buffer);
+        }
+        
+        // Enhanced logging functions with animations
+        function addLog(message, type = 'info') {
+            const logContent = document.getElementById('log-content');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-timestamp">[${timestamp}]</span>
+                <span class="log-${type}">${message}</span>
+            `;
+            logContent.appendChild(logEntry);
+            logContent.scrollTop = logContent.scrollHeight;
+            
+            // Add visual feedback for important messages
+            if (type === 'success' || type === 'error') {
+                logEntry.style.background = type === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+                setTimeout(() => {
+                    logEntry.style.background = 'transparent';
+                }, 2000);
+            }
+        }
+        
+        // Create RCM payload (from WebRCM implementation)
+        function createRCMPayload(intermezzo, payload) {
+            const rcmLength = 0x30298;
+            const intermezzoAddressRepeatCount = (INTERMEZZO_LOCATION - RCM_PAYLOAD_ADDRESS) / 4;
+            const rcmPayloadSize = Math.ceil((0x2A8 + (0x4 * intermezzoAddressRepeatCount) + 0x1000 + payload.byteLength) / 0x1000) * 0x1000;
+            
+            const rcmPayload = new Uint8Array(new ArrayBuffer(rcmPayloadSize));
+            const rcmPayloadView = new DataView(rcmPayload.buffer);
+            
+            rcmPayloadView.setUint32(0x0, rcmLength, true);
+            
+            for (let i = 0; i < intermezzoAddressRepeatCount; i++) {
+                rcmPayloadView.setUint32(0x2A8 + i * 4, INTERMEZZO_LOCATION, true);
+            }
+            
+            rcmPayload.set(intermezzo, 0x2A8 + (0x4 * intermezzoAddressRepeatCount));
+            rcmPayload.set(payload, 0x2A8 + (0x4 * intermezzoAddressRepeatCount) + 0x1000);
+            
+            return rcmPayload;
+        }
+        
+        // Write data to device (from WebRCM implementation)
+        async function write(device, data) {
+            let length = data.length;
+            let writeCount = 0;
+            const packetSize = 0x1000;
+            
+            while (length) {
+                const dataToTransmit = Math.min(length, packetSize);
+                length -= dataToTransmit;
+                
+                const chunk = data.slice(0, dataToTransmit);
+                data = data.slice(dataToTransmit);
+                await device.transferOut(1, chunk);
+                writeCount++;
+            }
+            
+            return writeCount;
+        }
+        
+        // Buffer to hex conversion
+        function bufferToHex(data) {
+            let result = "";
+            for (let i = 0; i < data.byteLength; i++) {
+                result += data.getUint8(i).toString(16).padStart(2, '0');
+            }
+            return result;
+        }
+        
+        // Read file as array buffer
+        function readFileAsArrayBuffer(file) {
+            return new Promise((res, rej) => {
+                const reader = new FileReader();
+                reader.onload = e => res(e.target.result);
+                reader.onerror = rej;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        // Enhanced WebUSB support check with visual feedback
         function checkWebUSBSupport() {
             const supportBadge = document.getElementById('webusb-support');
             const statusText = document.getElementById('status-text');
             const connectBtn = document.getElementById('connect-btn');
             
-            if (navigator.usb) {
-                supportBadge.textContent = 'Supported';
-                supportBadge.className = 'badge badge-success';
-                statusText.textContent = 'WebUSB is supported. Ready to connect.';
-                connectBtn.disabled = false;
-                detectDevices();
-            } else {
-                supportBadge.textContent = 'Not Supported';
-                supportBadge.className = 'badge badge-error';
-                statusText.textContent = 'WebUSB is not supported in this browser. Please use Chrome, Edge, or Opera.';
-            }
+            // Add loading animation
+            supportBadge.innerHTML = '<span class="loading"></span> Checking...';
+            
+            setTimeout(() => {
+                if (navigator.usb) {
+                    supportBadge.innerHTML = '<span class="checkmark"></span> Supported';
+                    supportBadge.className = 'badge badge-success';
+                    statusText.textContent = 'WebUSB is supported. Ready to connect.';
+                    connectBtn.disabled = false;
+                    addLog('WebUSB support detected', 'success');
+                    detectDevices();
+                } else {
+                    supportBadge.textContent = 'Not Supported';
+                    supportBadge.className = 'badge badge-error';
+                    statusText.textContent = 'WebUSB is not supported in this browser. Please use Chrome, Edge, or Opera.';
+                    addLog('WebUSB not supported in this browser', 'error');
+                }
+            }, 1000);
         }
         
         // Detect connected devices
         async function detectDevices() {
             try {
+                addLog('Scanning for connected devices...');
                 const devices = await navigator.usb.getDevices();
                 const switchDevice = devices.find(d => d.vendorId === 0x0955 && d.productId === 0x7321);
                 
                 if (switchDevice) {
                     device = switchDevice;
                     updateConnectionStatus(true);
+                    addLog('Nintendo Switch in RCM mode detected!', 'success');
+                } else {
+                    addLog('No Switch in RCM mode found');
                 }
             } catch (error) {
-                console.error('Detection error:', error);
+                addLog(`Detection error: ${error.message}`, 'error');
             }
         }
         
         // Connect to device
         async function connectDevice() {
             try {
+                addLog('Requesting device access...');
                 device = await navigator.usb.requestDevice({
                     filters: [{ vendorId: 0x0955, productId: 0x7321 }]
                 });
                 updateConnectionStatus(true);
+                addLog('Successfully connected to Nintendo Switch', 'success');
             } catch (error) {
+                addLog(`Connection failed: ${error.message}`, 'error');
                 document.getElementById('status-text').textContent = `Connection failed: ${error.message}`;
             }
         }
         
-        // Update connection status
+        // Enhanced connection status update with animations
         function updateConnectionStatus(connected) {
             const statusBadge = document.getElementById('connection-status');
             const statusText = document.getElementById('status-text');
             const injectBtn = document.getElementById('inject-btn');
             
             if (connected) {
-                statusBadge.textContent = 'Connected';
+                statusBadge.innerHTML = '<span class="checkmark"></span> Connected';
                 statusBadge.className = 'badge badge-success';
                 statusText.textContent = 'Nintendo Switch detected in RCM mode!';
-                injectBtn.disabled = !selectedPayload;
+                injectBtn.disabled = !selectedPayloadData;
             } else {
                 statusBadge.textContent = 'Disconnected';
                 statusBadge.className = 'badge badge-error';
@@ -298,73 +991,222 @@
             }
         }
         
-        // Select payload
-        function selectPayload(type) {
+        // Enhanced payload selection with visual feedback
+        async function selectPayload(type, data = null) {
+            // Clear previous selections
+            document.querySelectorAll('.payload-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
             selectedPayload = type;
+            
+            if (type === 'custom') {
+                selectedPayloadData = data;
+            } else if (predefinedPayloads[type]) {
+                try {
+                    selectedPayloadData = await fetchPayload(predefinedPayloads[type]);
+                    addLog(`Predefined payload '${type}' loaded from file.`, 'success');
+                } catch (error) {
+                    addLog(`Failed to load predefined payload '${type}': ${error.message}`, 'error');
+                    selectedPayloadData = null;
+                }
+            } else {
+                selectedPayloadData = null;
+            }
+            
+            if (type !== 'custom') {
+                const btn = document.querySelector(`[data-payload="${type}"]`);
+                if (btn) btn.classList.add('selected');
+            }
+            
+            addLog(`Selected ${type} payload`, 'info');
             document.getElementById('status-text').textContent = `Selected ${type} payload`;
-            document.getElementById('inject-btn').disabled = !device;
+            document.getElementById('inject-btn').disabled = !device || !selectedPayloadData;
         }
         
-        // Handle file upload
-        document.getElementById('payload-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.name.endsWith('.bin')) {
-                selectedPayload = file;
-                document.getElementById('status-text').textContent = `Custom payload loaded: ${file.name}`;
-                document.getElementById('inject-btn').disabled = !device;
-            }
-        });
-        
-        // Inject payload (simplified for demo)
+        // Main injection function (from WebRCM) with enhanced progress tracking
         async function injectPayload() {
-            if (!device || !selectedPayload) return;
+            if (!device || !selectedPayloadData) {
+                addLog('No device connected or payload selected', 'error');
+                return;
+            }
             
             const progressContainer = document.getElementById('progress-container');
-            const progressBar = document.getElementById('progress-bar');
+            const progressFill = document.getElementById('progress-fill');
             const progressText = document.getElementById('progress-text');
             const statusText = document.getElementById('status-text');
+            const injectBtn = document.getElementById('inject-btn');
             
             progressContainer.style.display = 'block';
+            injectBtn.disabled = true;
+            injectBtn.innerHTML = '<span class="loading"></span> Injecting...';
             
             try {
+                addLog('Starting payload injection...', 'info');
+                
+                // Step 1: Open device
                 statusText.textContent = 'Opening device connection...';
-                progressBar.style.width = '20%';
+                progressFill.style.width = '10%';
+                progressText.textContent = '10%';
+                addLog('Opening USB device...');
+                
+                await device.open();
+                await device.selectConfiguration(1);
+                await device.claimInterface(0);
+                
+                // Step 2: Get device ID
+                statusText.textContent = 'Reading device information...';
+                progressFill.style.width = '20%';
                 progressText.textContent = '20%';
+                addLog('Reading device ID...');
                 
-                await new Promise(resolve => setTimeout(resolve, 500));
+                const deviceID = await device.transferIn(1, 16);
+                addLog(`Device ID: ${bufferToHex(deviceID.data)}`);
                 
+                // Step 3: Prepare payload
                 statusText.textContent = 'Preparing payload...';
-                progressBar.style.width = '50%';
-                progressText.textContent = '50%';
+                progressFill.style.width = '40%';
+                progressText.textContent = '40%';
+                addLog('Preparing RCM payload...');
                 
-                await new Promise(resolve => setTimeout(resolve, 500));
+                const rcmPayload = createRCMPayload(intermezzo, selectedPayloadData);
+                addLog(`RCM payload created: ${rcmPayload.length} bytes`);
                 
-                statusText.textContent = 'Injecting payload...';
-                progressBar.style.width = '80%';
-                progressText.textContent = '80%';
+                // Step 4: Send payload
+                statusText.textContent = 'Sending payload...';
+                progressFill.style.width = '60%';
+                progressText.textContent = '60%';
+                addLog('Sending payload to device...');
                 
-                await new Promise(resolve => setTimeout(resolve, 500));
+                const writeCount = await write(device, rcmPayload);
+                addLog(`Payload sent in ${writeCount} packets`);
                 
+                // Step 5: Check alignment and send additional buffer if needed
+                statusText.textContent = 'Checking payload alignment...';
+                progressFill.style.width = '75%';
+                progressText.textContent = '75%';
+                
+                if (writeCount % 2 !== 1) {
+                    addLog('Switching to higher buffer...', 'warning');
+                    await device.transferOut(1, new ArrayBuffer(0x1000));
+                }
+                
+                // Step 6: Trigger vulnerability
+                statusText.textContent = 'Triggering RCM exploit...';
+                progressFill.style.width = '90%';
+                progressText.textContent = '90%';
+                
+                const vulnerabilityLength = 0x7000;
+                try {
+                    const smash = await device.controlTransferIn({
+                        requestType: 'standard',
+                        recipient: 'interface',
+                        request: 0x00,
+                        value: 0x00,
+                        index: 0x00
+                    }, vulnerabilityLength);
+                    addLog('Exploit triggered successfully!', 'success');
+                } catch (error) {
+                    addLog(`Exploit triggered (expected error): ${error.message}`, 'success');
+                    // This error is expected when the exploit works
+                }
+                
+                // Step 7: Complete
                 statusText.textContent = 'Payload injection completed!';
-                progressBar.style.width = '100%';
+                progressFill.style.width = '100%';
                 progressText.textContent = '100%';
+                addLog('Payload injection completed successfully!', 'success');
+                addLog('Your Switch should now boot the injected payload.', 'success');
+                
+                injectBtn.innerHTML = '<span class="checkmark"></span> Injection Complete!';
                 
                 setTimeout(() => {
                     progressContainer.style.display = 'none';
-                    progressBar.style.width = '0%';
-                }, 2000);
+                    progressFill.style.width = '0%';
+                    injectBtn.innerHTML = '⚡ Inject Payload';
+                    injectBtn.disabled = false;
+                    updateConnectionStatus(false); // Device will disconnect after injection
+                }, 3000);
                 
             } catch (error) {
+                addLog(`Injection failed: ${error.message}`, 'error');
                 statusText.textContent = `Injection failed: ${error.message}`;
                 progressContainer.style.display = 'none';
+                injectBtn.innerHTML = '⚡ Inject Payload';
+                injectBtn.disabled = false;
+                
+                // Try to close device connection
+                try {
+                    if (device.opened) {
+                        await device.close();
+                    }
+                } catch (closeError) {
+                    addLog(`Error closing device: ${closeError.message}`, 'error');
+                }
             }
         }
         
         // Event listeners
         document.getElementById('connect-btn').addEventListener('click', connectDevice);
         document.getElementById('detect-btn').addEventListener('click', detectDevices);
+        document.getElementById('inject-btn').addEventListener('click', injectPayload);
         
-        // Initialize
+        // Enhanced file upload with drag and drop
+        const fileInput = document.getElementById('payload-file');
+        const fileContainer = fileInput.parentElement;
+        
+        fileInput.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (file && file.name.endsWith('.bin')) {
+                try {
+                    const arrayBuffer = await readFileAsArrayBuffer(file);
+                    const payloadData = new Uint8Array(arrayBuffer);
+                    selectPayload('custom', payloadData);
+                    addLog(`Custom payload loaded: ${file.name} (${payloadData.length} bytes)`, 'success');
+                } catch (error) {
+                    addLog(`Failed to load custom payload: ${error.message}`, 'error');
+                }
+            } else {
+                addLog('Please select a valid .bin file', 'warning');
+            }
+        });
+
+        // Drag and drop functionality
+        fileContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileContainer.style.borderColor = 'rgba(59, 130, 246, 0.8)';
+            fileContainer.style.background = 'rgba(59, 130, 246, 0.1)';
+        });
+
+        fileContainer.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            fileContainer.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+            fileContainer.style.background = 'rgba(0, 0, 0, 0.3)';
+        });
+
+        fileContainer.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            fileContainer.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+            fileContainer.style.background = 'rgba(0, 0, 0, 0.3)';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Payload button event listeners
+        document.querySelectorAll('.payload-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const payloadType = btn.dataset.payload;
+                selectPayload(payloadType);
+            });
+        });
+        
+        // Initialize animations and check WebUSB support
+        createParticles();
+        createFloatingElements();
         checkWebUSBSupport();
     </script>
 </body>
