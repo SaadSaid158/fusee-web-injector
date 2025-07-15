@@ -1,0 +1,47 @@
+{
+  "name": "RCM Payload Injector",
+  "short_name": "RCM Injector",
+  "description": "Inject payloads to your Nintendo Switch in RCM mode using WebUSB technology",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e293b",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "categories": ["utilities", "developer"],
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Connect Device",
+      "short_name": "Connect",
+      "description": "Connect to Nintendo Switch",
+      "url": "/?action=connect",
+      "icons": [
+        {
+          "src": "favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
