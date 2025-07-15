@@ -404,6 +404,26 @@
             backdrop-filter: blur(8px);
         }
 
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .log-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .log-btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            min-width: auto;
+        }
+
         .log-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -516,6 +536,24 @@
             gap: 12px;
             justify-content: center;
             margin-bottom: 16px;
+        }
+
+        .payload-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .payload-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .payload-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            font-weight: 400;
         }
 
         .file-input-container {
@@ -709,8 +747,18 @@
             <div class="payload-section">
                 <h3>Predefined Payloads</h3>
                 <div class="payload-buttons">
-                    <button class="button payload-btn" data-payload="hekate" title="Select Hekate payload (Ctrl+1)" aria-label="Select CTCaer Hekate v6.3.1 payload">CTCaer Hekate v6.3.1</button>
-                    <button class="button payload-btn" data-payload="atmosphere" title="Select Atmosphere payload (Ctrl+2)" aria-label="Select Atmosphere Fusee v1.9.1 payload">Atmosphere Fusee v1.9.1</button>
+                    <button class="button payload-btn" data-payload="hekate" title="Select Hekate payload (Ctrl+1)" aria-label="Select CTCaer Hekate v6.3.1 payload">
+                        <div class="payload-info">
+                            <div class="payload-name">CTCaer Hekate v6.3.1</div>
+                            <div class="payload-desc">Bootloader & Homebrew Launcher</div>
+                        </div>
+                    </button>
+                    <button class="button payload-btn" data-payload="atmosphere" title="Select Atmosphere payload (Ctrl+2)" aria-label="Select Atmosphere Fusee v1.9.1 payload">
+                        <div class="payload-info">
+                            <div class="payload-name">Atmosphere Fusee v1.9.1</div>
+                            <div class="payload-desc">Custom Firmware</div>
+                        </div>
+                    </button>
                 </div>
             </div>
             
@@ -750,7 +798,13 @@
         </div>
         
         <div class="log-container">
-            <h3>📋 Injection Log</h3>
+            <div class="log-header">
+                <h3>📋 Injection Log</h3>
+                <div class="log-actions">
+                    <button class="button log-btn" id="export-logs-btn" title="Export logs to file (Ctrl+E)" aria-label="Export logs to text file">📥 Export</button>
+                    <button class="button log-btn" id="clear-logs-btn" title="Clear all logs (Ctrl+L)" aria-label="Clear all log entries">🗑️ Clear</button>
+                </div>
+            </div>
             <div id="log-content">
                 <div class="log-entry">
                     <span class="log-timestamp">[00:00:00]</span>
@@ -999,6 +1053,8 @@
         document.head.appendChild(notificationStyles);
         
         // Enhanced logging functions with animations
+        let logEntries = [];
+        
         function addLog(message, type = 'info') {
             const logContent = document.getElementById('log-content');
             const timestamp = new Date().toLocaleTimeString();
@@ -1011,6 +1067,13 @@
             logContent.appendChild(logEntry);
             logContent.scrollTop = logContent.scrollHeight;
             
+            // Store log entry for export
+            logEntries.push({
+                timestamp: timestamp,
+                message: message,
+                type: type
+            });
+            
             // Add visual feedback for important messages
             if (type === 'success' || type === 'error') {
                 logEntry.style.background = type === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
@@ -1018,6 +1081,43 @@
                     logEntry.style.background = 'transparent';
                 }, 2000);
             }
+        }
+        
+        // Export logs functionality
+        function exportLogs() {
+            const logText = logEntries.map(entry => 
+                `[${entry.timestamp}] ${entry.type.toUpperCase()}: ${entry.message}`
+            ).join('\n');
+            
+            const blob = new Blob([logText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rcm-injector-logs-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            addLog('Logs exported successfully', 'success');
+            showNotification('Logs exported to file', 'success');
+        }
+        
+        // Clear logs functionality
+        function clearLogs() {
+            const logContent = document.getElementById('log-content');
+            logContent.innerHTML = `
+                <div class="log-entry">
+                    <span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span>
+                    <span class="log-info">Logs cleared</span>
+                </div>
+            `;
+            logEntries = [{
+                timestamp: new Date().toLocaleTimeString(),
+                message: 'Logs cleared',
+                type: 'info'
+            }];
+            showNotification('Logs cleared', 'info');
         }
         
         // Create RCM payload (from WebRCM implementation)
@@ -1327,6 +1427,8 @@
         document.getElementById('connect-btn').addEventListener('click', connectDevice);
         document.getElementById('detect-btn').addEventListener('click', detectDevices);
         document.getElementById('inject-btn').addEventListener('click', injectPayload);
+        document.getElementById('export-logs-btn').addEventListener('click', exportLogs);
+        document.getElementById('clear-logs-btn').addEventListener('click', clearLogs);
         
         // Enhanced file upload with drag and drop
         const fileInput = document.getElementById('payload-file');
@@ -1393,6 +1495,17 @@
         createFloatingElements();
         checkWebUSBSupport();
         
+        // Register service worker for offline functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(function(registration) {
+                    addLog('Service Worker registered for offline functionality', 'success');
+                })
+                .catch(function(error) {
+                    addLog('Service Worker registration failed: ' + error, 'warning');
+                });
+        }
+        
         // Add keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             // Check if Ctrl key is pressed
@@ -1428,20 +1541,18 @@
                         break;
                     case 'l':
                         e.preventDefault();
-                        // Clear logs
-                        document.getElementById('log-content').innerHTML = `
-                            <div class="log-entry">
-                                <span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span>
-                                <span class="log-info">Logs cleared</span>
-                            </div>
-                        `;
+                        clearLogs();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        exportLogs();
                         break;
                 }
             }
         });
         
         // Add keyboard navigation hints
-        addLog('Keyboard shortcuts: Ctrl+C (Connect), Ctrl+D (Detect), Ctrl+1/2 (Select payload), Ctrl+O (Open file), Ctrl+I (Inject), Ctrl+L (Clear logs)', 'info');
+        addLog('Keyboard shortcuts: Ctrl+C (Connect), Ctrl+D (Detect), Ctrl+1/2 (Select payload), Ctrl+O (Open file), Ctrl+I (Inject), Ctrl+L (Clear logs), Ctrl+E (Export logs)', 'info');
     </script>
     <footer style="
     text-align: center;
